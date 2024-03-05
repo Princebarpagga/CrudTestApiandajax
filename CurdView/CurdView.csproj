@@ -10,4 +10,8 @@
     <ProjectReference Include="..\CrudTestApi\CrudTestApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Script\" />
+  </ItemGroup>
+
 </Project>
