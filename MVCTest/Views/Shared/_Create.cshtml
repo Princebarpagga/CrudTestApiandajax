@@ -1,0 +1,161 @@
+﻿@model MVCTest.Models.Employee
+@using (Html.BeginForm("Create", "Employee", FormMethod.Post, new { @class = "form-horizontal", role = "form", id = "createEmployeeForm" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="modal-header">
+        <h4 class="modal-title">Add Employee</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="EmployeeName" class="control-label col-md-2">Employee Name</label>
+            <div class="col-md-10">
+                @*<input type="text" id="EmployeeName" class="form-control"  pattern="[A-Za-z]{3}" name="EmployeeName" >*@
+                <input type="text" id="EmployeeName" class="form-control" pattern="[A-Z][a-zA-Z]*" name="EmployeeName" >
+
+                <span class="text-danger" id="EmployeeNameValidation"></span>
+            </div>
+        </div>
+       
+   
+    <div class="form-group">
+        <label for="Salary" class="control-label col-md-2">Salary</label>
+        <div class="col-md-10">
+            <input type="text" id="Salary" class="form-control" name="Salary" onkeypress="return isNumberKey(event)" />
+            <span class="text-danger" id="SalaryValidation"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="Email" class="control-label col-md-2">Email</label>
+        <div class="col-md-10">
+            <input type="email" id="Email" class="form-control" name="Email" />
+            <span class="text-danger" id="EmailValidation"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="DepartmentId" class="control-label col-md-2">Department</label>
+        <div class="col-md-10">
+            <select id="DepartmentId" class="form-control" name="DepartmentId">
+                @* <option value="">---------- Select Department ----------</option>*@
+                @foreach (var department in ViewBag.DepartmentList as IEnumerable<SelectListItem>)
+                {
+                    <option value="@department.Value">@department.Text</option>
+                }
+            </select>
+            <span class="text-danger" id="DepartmentIdValidation"></span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="SkillId" class="control-label col-md-2">Skill</label>
+        <div class="col-md-10">
+            <select id="SkillId" class="form-control" name="SkillId">
+                @* <option value="">------------- Select Skill --------------</option>*@
+                @foreach (var skill in ViewBag.SkillList as IEnumerable<SelectListItem>)
+                {
+                    <option value="@skill.Value">@skill.Text</option>
+                }
+            </select>
+            <span class="text-danger" id="SkillIdValidation"></span>
+        </div>
+    </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" onclick="saveEmployee()">Save</button>
+        <button type="button" class="btn btn-outline-secondary" onclick="closePopup()">Close</button>
+    </div>
+
+}
+<script src="~/Scripts/saveEmployeeValidation.js"></script>
+
+@*<script>
+        //function saveEmployee() {
+        //    debugger
+        //    var form = $('#createEmployeeForm');
+        //    $.ajax({
+        //        url: form.attr('action'),
+        //        method: form.attr('method'),
+        //        data: form.serialize(),
+        //        success: function (response) {
+
+        //            if ($(response).find('.field-validation-error').length > 0) {
+        //                $('#addEmployeePartial').html(response);
+        //                $('#addEmployeeModal').modal('show');
+        //            } else {
+        //                $('#addEmployeeModal').modal('hide');
+        //            }
+        //        }
+        //    });
+        //}
+        function saveEmployee() {
+            var form = $('#createEmployeeForm');
+
+            // Clear previous validation messages
+            $('.text-danger').text('');
+
+            // Validate Employee Name
+            var employeeName = $('#EmployeeName').val();
+            if (employeeName.trim() === '') {
+                $('#EmployeeNameValidation').text('Employee Name is required.');
+                return;
+            }
+
+            // Validate Salary
+            var salary = $('#Salary').val();
+            if (salary.trim() === '') {
+                $('#SalaryValidation').text('Salary is required.');
+                return;
+            }
+            var email = $('#Email').val();
+            if (email.trim() === '') {
+                $('#EmailValidation').text('Email is required.');
+                return;
+            } else if (!validateEmail(email)) {
+                $('#EmailValidation').text('Invalid email format.');
+                return;
+            }
+            // Validate Department
+            var departmentId = $('#DepartmentId').val();
+            if (departmentId.trim() === '') {
+                $('#DepartmentIdValidation').text('Department is required.');
+                return;
+            }
+
+            // Validate Skill
+            var skillId = $('#SkillId').val();
+            if (skillId.trim() === '') {
+                $('#SkillIdValidation').text('Skill is required.');
+                return;
+            }
+
+            // If all fields are valid, submit the form
+            $.ajax({
+                url: form.attr('action'),
+                method: form.attr('method'),
+                data: form.serialize(),
+                success: function (response) {
+                    // Check if the response contains validation errors
+                    if ($(response).find('.field-validation-error').length > 0) {
+                        $('#addEmployeePartial').html(response);
+                    } else {
+                        $('#addEmployeeModal').modal('hide');
+                    }
+                }
+            });
+        }
+        // Validate Email Format
+        function validateEmail(email) {
+            var re = /\S+@\S+\.\S+/;
+            return re.test(email);
+        }
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            return true;
+        }
+
+        function closePopup() {
+            $('#addEmployeeModal').modal('hide');
+        }
+    </script>*@

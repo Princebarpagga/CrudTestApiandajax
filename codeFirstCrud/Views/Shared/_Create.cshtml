@@ -1,0 +1,65 @@
+﻿@model codeFirstCrud.Models.Employee
+
+@using (Html.BeginForm("Create", "Employee", FormMethod.Post, new { @class = "form-horizontal", role = "form", id = "createEmployeeForm" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="modal-header">
+        <h4 class="modal-title">Add Employee</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="EmployeeName" class="control-label col-md-2">Employee Name</label>
+            <div class="col-md-10">
+                <input type="text" id="EmployeeName" class="form-control" name="EmployeeName" required />
+                <span class="text-danger" id="EmployeeNameValidation"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="Salary" class="control-label col-md-2">Salary</label>
+            <div class="col-md-10">
+                <input type="text" id="Salary" class="form-control" name="Salary" onkeypress="return isNumberKey(event)" required />
+                <span class="text-danger" id="SalaryValidation"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Email" class="control-label col-md-2">Email</label>
+            <div class="col-md-10">
+                <input type="email" id="Email" class="form-control" name="Email" />
+                <span class="text-danger" id="EmailValidation"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="DepartmentId" class="control-label col-md-2">Department</label>
+            <div class="col-md-10">
+                <select id="DepartmentId" class="form-control" name="DepartmentId" required>
+                    @* <option value="">Select Department</option> *@
+                    @foreach (var department in ViewBag.DepartmentList as IEnumerable<SelectListItem>)
+                    {
+                        <option value="@department.Value">@department.Text</option>
+                    }
+                </select>
+                <span class="text-danger" id="DepartmentIdValidation"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="SkillId" class="control-label col-md-2">Skill</label>
+            <div class="col-md-10">
+                <select id="SkillId" class="form-control" name="SkillId" required>
+                   @*  <option value="">Select Skill</option> *@
+                    @foreach (var skill in ViewBag.SkillList as IEnumerable<SelectListItem>)
+                    {
+                        <option value="@skill.Value">@skill.Text</option>
+                    }
+                </select>
+                <span class="text-danger" id="SkillIdValidation"></span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="saveEmployee()">Save</button>
+        <button type="button" class="btn btn-default" onclick="closePopup()">Close</button>
+    </div>
+}
+<script src="~/js/SaveValidation.js"></script>

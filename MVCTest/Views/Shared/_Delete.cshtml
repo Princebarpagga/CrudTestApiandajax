@@ -1,0 +1,23 @@
+﻿@model MVCTest.Models.Employee
+
+<div class="modal-header">
+    <h4 class="modal-title">Delete Employee</h4>
+</div>
+<div class="modal-body">
+    <p>Are you sure you want to delete employee: @Model.EmployeeName?</p>
+</div>
+
+<div class="modal-footer">
+    @using (Html.BeginForm("Delete", "Employee", new { id = Model.EmpId }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <button type="button" class="btn btn-default" onclick="closePopup()">Cancel</button>
+    }
+</div>
+
+<script>
+    function closePopup() {
+        $('#deleteEmployeeModal').modal('hide');
+    }
+</script>

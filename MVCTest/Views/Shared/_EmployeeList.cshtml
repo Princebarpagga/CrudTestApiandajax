@@ -1,0 +1,18 @@
+﻿@model List<MVCTest.Models.Employee>
+
+@foreach (var employee in Model)
+{
+    <tr>
+        <td>@Html.DisplayFor(modelItem => employee.EmployeeName)</td>
+        <td>@Html.DisplayFor(modelItem => employee.Salary)</td>
+        <td>@Html.DisplayFor(modelItem => employee.Department.DepartmentName)</td>
+        <td>@Html.DisplayFor(modelItem => employee.Skill.SkillName)</td>
+        <td>@Html.DisplayFor(modelItem => employee.Email)</td>
+        <td>
+            <button type="button" class="btn btn-outline-primary" onclick="editEmployee(@employee.EmpId)">Edit</button>
+            <button type="button" class="btn btn-outline-info" onclick="showDetails(@employee.EmpId)">Details</button>
+            <button type="button" class="btn btn-outline-danger" onclick="deleteEmployee(@employee.EmpId)">Delete</button>
+        </td>
+    </tr>
+}
+

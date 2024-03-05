@@ -1,0 +1,412 @@
+﻿
+@model PagedList.IPagedList<MVCTest.Models.Employee>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "Employee List";
+}
+
+<!-- Add button to trigger popup -->
+<button type="button" class="btn btn-outline-primary" id="addEmployeeBtn">Add Employee</button>
+
+<!-- Popup for adding new employee -->
+<div id="addEmployeeModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- AddEmployee partial view will be loaded here -->
+            @*@foreach (var item in Model)
+                {
+                    @Html.Partial("_Create", item)
+                }*@
+
+            @*@Html.Partial("_Create", Model)*@
+            <div id="addEmployeePartial"></div>
+        </div>
+    </div>
+</div>
+<div id="editEmployeeModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div id="editEmployeePartial"></div>
+        </div>
+    </div>
+</div>
+<div id="deleteEmployeeModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div id="deleteEmployeePartial"></div>
+        </div>
+    </div>
+</div>
+<!-- Details Employee Modal -->
+<div id="detailsEmployeeModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            @*<div class="modal-header">
+                    <h5 class="modal-title">Employee Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>*@
+            <div class="modal-body">
+                <!-- Details content will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-center">
+    <h1>Employee List</h1>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form asp-action="Index" method="get">
+
+                <div class="row">
+                    <div class="col-2">
+                        <input type="text" id="searchString" placeholder="Search...." class="form-control" name="searchString"  />
+
+                        @*<span id="searchStringError" class="text-danger" style="display:none;">Please enter something to search.</span>*@
+                    </div>
+                    <div class="col-2">
+                        <button type="submit" id="searchButton" class="btn btn-outline-primary" value="Search">Search</button>
+                        <button type="button" id="clearSearch" class="btn btn-outline-primary" value="Reset">Reset</button>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(ViewBag.NoDataFoundMessage))
+                {
+                    <div id="noDataMessage" class="alert alert-warning" role="alert">
+                        @ViewBag.NoDataFoundMessage
+                    </div>
+
+                }
+                <input type="hidden" id="searchStringHidden" name="searchString" />
+            </form>
+        </div>
+    </div>
+
+    <table class="table table-striped table-bordered" id="employeeTable">
+        <thead>
+            <tr>
+                <th onclick="sortTable('EmployeeName')">
+                    EmployeeName
+                    <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable('Salary')">
+                    Salary
+                    <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable('Department')">
+                    Department
+                    <i class="fas fa-sort"></i>
+                </th>
+                <th onclick="sortTable('Skill')">
+                    Skill
+                    <i class="fas fa-sort"></i>
+                </th>
+                <th>Email</th>
+                @*<th>
+                        @Html.ActionLink("Salary", "Index", new { sortOrder = ViewBag.SalarySortParam })
+                    </th>
+                    <th>
+                        @Html.ActionLink("Department", "Index", new { sortOrder = ViewBag.DepartmentSortParam })
+                    </th>
+                    <th>
+                        @Html.ActionLink("Skill", "Index", new { sortOrder = ViewBag.SkillSortParam })
+                    </th>*@
+                @*<th>
+                        <a href="@Url.Action("Index", new { sortOrder = ViewBag.NameSortParam })">Employee Name</a>
+                    </th>*@
+                @*<th>
+                        <a href="@Url.Action("Index", new { sortOrder = ViewBag.SalarySortParam })">Salary</a>
+                    </th>
+                    <th>
+                        <a href="@Url.Action("Index", new { sortOrder = ViewBag.DepartmentSortParam })">Department</a>
+                    </th>
+                    <th>
+                        <a href="@Url.Action("Index", new { sortOrder = ViewBag.SkillSortParam })">Skill</a>
+                    </th>*@
+
+
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => employee.EmployeeName)</td>
+                    <td>@Html.DisplayFor(modelItem => employee.Salary)</td>
+                    <td>@Html.DisplayFor(modelItem => employee.Department.DepartmentName)</td>
+                    <td>@Html.DisplayFor(modelItem => employee.Skill.SkillName)</td>
+                    <td>@Html.DisplayFor(modelItem => employee.Email)</td>
+                    @*<td>@employee.EmployeeName</td>
+                        <td>@employee.Salary</td>
+                        <td>@employee.Department.DepartmentName</td>
+                        <td>@employee.Skill.SkillName</td>*@
+                    <td>
+                        @*@Html.ActionLink("Edit", "Edit", new { id = employee.EmpId }, new { @class = "btn btn-primary" })
+                            @Html.ActionLink("Delete", "Delete", new { id = employee.EmpId }, new { @class = "btn btn-danger" })*@
+                        <button type="button" class="btn btn-outline-primary" onclick="editEmployee(@employee.EmpId)">Edit</button>
+                        <button type="button" class="btn btn-outline-info" onclick="showDetails(@employee.EmpId)">Details</button>
+                        <button type="button" class="btn btn-outline-danger" onclick="deleteEmployee(@employee.EmpId)">Delete</button>
+                        @*<i class="fas fa-edit" onclick="editEmployee(@employee.EmpId)"></i>*@
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+    @*Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+        @Html.PagedListPager(Model, page => Url.Action("Index",
+            new
+            {
+                sortOrder = ViewBag.CurrentSort,
+                currentFilter = ViewBag.CurrentFilter,
+                page
+            }))*@
+    <!-- Pagination buttons -->
+    <div class="text-center">
+        <!-- Previous Page Button -->
+        <button type="button" class="btn btn-outline-primary @(Model.HasPreviousPage ? "" : "disabled")"
+                onclick="goToPage(@Model.PageNumber - 1)">
+            Previous
+        </button>
+
+        <!-- Page Numbers as Buttons -->
+        @for (int i = 1; i <= Model.PageCount; i++)
+        {
+            <button type="button" class="btn btn-outline-primary @(i == Model.PageNumber ? "active" : "")"
+                    onclick="goToPage(@i)">
+                @i
+            </button>
+        }
+
+        <!-- Next Page Button -->
+        <button type="button" class="btn btn-outline-primary @(Model.HasNextPage ? "" : "disabled")"
+                onclick="goToPage(@Model.PageNumber + 1)">
+            Next
+        </button>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+      $(function () {
+
+            $("#addEmployeeBtn").click(function () {
+                $("#addEmployeePartial").load("@Url.Action("Create", "Employee")");
+                $("#addEmployeeModal").modal("show");
+            });
+        });
+
+
+
+        function editEmployee(empId) {
+            debugger
+    $.get('@Url.Action("Edit", "Employee")', { id: empId })
+        .done(function (data) {
+            $('#editEmployeePartial').html(data);
+            $('#editEmployeeModal').modal('show');
+        });
+}
+    function deleteEmployee(empId) {
+    $.get('@Url.Action("Delete", "Employee")', { id: empId })
+        .done(function (data) {
+            $('#deleteEmployeePartial').html(data);
+            $('#deleteEmployeeModal').modal('show');
+        });
+}
+        $(document).ready(function () {
+            $('th a').click(function (e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+                window.location.href = url;
+            });
+        });
+        function sortTable(columnName) {
+            // Get the table and rows
+            var table = document.getElementById("employeeTable");
+            if (!table) {
+                console.error("Table element not found.");
+                return;
+            }
+            var rows = table.getElementsByTagName("tr");
+            if (!rows || rows.length <= 1) {
+                console.error("No rows found in the table.");
+                return;
+            }
+
+            // Find the index of the column to be sorted
+            var columnIndex = Array.from(rows[0].getElementsByTagName("th")).findIndex(th => th.textContent.trim() === columnName);
+            if (columnIndex === -1) {
+                console.error("Column not found in the table header.");
+                return;
+            }
+
+            // Get the sorting order (asc or desc)
+            var sortOrder = "asc";
+            if (rows[0].getElementsByTagName("th")[columnIndex].classList.contains("asc")) {
+                sortOrder = "desc";
+            }
+
+            // Convert HTMLCollection to array for sorting
+            var rowsArray = Array.from(rows).slice(1);
+
+            // Sort the rows based on the column values
+            rowsArray.sort(function (a, b) {
+                var aValue = a.getElementsByTagName("td")[columnIndex].textContent;
+                var bValue = b.getElementsByTagName("td")[columnIndex].textContent;
+
+                if (isNaN(aValue) || isNaN(bValue)) {
+                    return sortOrder === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+                } else {
+                    return sortOrder === "asc" ? aValue - bValue : bValue - aValue;
+                }
+            });
+
+            // Append sorted rows back to the table
+            table.tBodies[0].append(...rowsArray);
+
+            // Toggle sorting order class for the clicked column
+            rows[0].getElementsByTagName("th")[columnIndex].classList.toggle("asc");
+            rows[0].getElementsByTagName("th")[columnIndex].classList.toggle("desc");
+        }
+         // DetailsEmployee function
+        function showDetails(empId) {
+            $.get('@Url.Action("Details", "Employee")', { id: empId })
+                .done(function (data) {
+                    $('#detailsEmployeeModal .modal-body').html(data);
+                    $('#detailsEmployeeModal').modal('show');
+                });
+        }
+         function goToPage(pageNumber) {
+            if (pageNumber >= 1 && pageNumber <= @Model.PageCount) {
+                window.location.href = '@Url.Action("Index", new { sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter })?page=' + pageNumber;
+            }
+        }
+        //function clearSearch() {
+        //    $('#searchString').val('');
+        //    performSearch();
+        //}
+        //$(function () {
+
+        //    $("#searchString").keyup(function () {
+        //        debugger
+        //        performSearch();
+        //    });
+
+        //    $("#clearSearch").click(function () {
+        //        clearSearch();
+        //    });
+        //});
+        //$(function () {
+        //    $("#clearSearch").click(function () {
+        //        debugger
+        //        clearSearch();
+        //    });
+        //});
+
+        //function clearSearch() {
+        //    debugger
+        //    $('#searchString').val('');
+        //    window.location.reload();
+        //}
+        /////////////////////////
+        //$(function () {
+        //    $("#clearSearch").click(function () {
+        //        clearSearch();
+        //    });
+
+        //});
+
+        //function clearSearch() {
+        //    $('#searchString').val('');
+        //    filterTable(''); // Show all data in the table
+        //}
+
+
+        //function filterTable(searchString) {
+        //    var $tableRows = $('#employeeTable tbody tr');
+        //    $tableRows.each(function () {
+        //        var $row = $(this);
+        //        var employeeName = $row.find('td:first-child').text();
+        //        if (employeeName.toLowerCase().includes(searchString.toLowerCase())) {
+        //            $row.show();
+        //        } else {
+        //            $row.hide();
+        //        }
+        //    });
+        //}
+
+
+        //$('#searchString').keyup(function () {
+        //    var searchString = $(this).val().trim();
+        //    filterTable(searchString);
+        //});
+
+        function clearSearch() {
+            var searchString = $('#searchString').val().trim();
+            if (searchString === '') {
+             //   alert('Please enter something to search.');
+                return;
+            }
+            $('#searchString').val('');
+            filterTable('');
+        }
+
+        function filterTable(searchString) {
+            var $tableRows = $('#employeeTable tbody tr');
+            var found = false;
+            $tableRows.each(function () {
+                var $row = $(this);
+                var employeeName = $row.find('td:first-child').text();
+                if (employeeName.toLowerCase().includes(searchString.toLowerCase())) {
+                    $row.show();
+                    found = true;
+                } else {
+                    $row.hide();
+                }
+            });
+            if (!found) {
+                $('#noDataMessage').show();
+            } else {
+                $('#noDataMessage').hide();
+            }
+        }
+
+        $(function () {
+            $("#clearSearch").click(function () {
+                clearSearch();
+            });
+        });
+
+        $('#searchString').keyup(function () {
+            var searchString = $(this).val().trim();
+            filterTable(searchString);
+        });
+
+        $(function () {
+            $("form").submit(function (event) {
+                event.preventDefault();
+                var searchString = $('#searchString').val().trim();
+                if (searchString === '') {
+                    alert('Please enter something to search.');
+                    return;
+                }
+                filterTable(searchString);
+            });
+        });
+
+        //$(function () {
+        //    $("form").submit(function () {
+        //        $("#searchStringHidden").val($("#searchString").val().trim());
+        //    });
+        //});
+
+    </script>
+}

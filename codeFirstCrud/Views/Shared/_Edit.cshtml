@@ -1,0 +1,69 @@
+﻿@model codeFirstCrud.Models.Employee
+<div id="editEmployeeModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div id="editEmployeePartial"></div>
+        </div>
+    </div>
+</div>
+<form action="@Url.Action("Edit", "Employee")" method="post" class="form-horizontal" role="form" id = "editEmployeeForm" >
+@* @using (Html.BeginForm("Edit", "Employee", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+{ *@
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.EmpId)
+    <div class="modal-header">
+        <h4 class="modal-title">Edit Employee</h4>
+    </div>
+   
+    <div class="modal-body">
+        <!-- Input fields for editing employee details -->
+        <div class="form-group">
+
+            @Html.LabelFor(model => model.EmployeeName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.EmployeeName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.EmployeeName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Salary, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Salary, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Salary, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Email" class="control-label col-md-2">Email</label>
+            <div class="col-md-10">
+                <input type="email" id="Email" class="form-control" name="Email" value="@Model.Email" />
+                <span class="text-danger" id="EmailValidation"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.DepartmentId, "Department", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.DepartmentId, ViewBag.DepartmentList as IEnumerable<SelectListItem>, "-- Select Department --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SkillId, "Skill", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.SkillId, ViewBag.SkillList as IEnumerable<SelectListItem>, "-- Select Skill --", new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.SkillId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Update </button>
+        <button type="button" class="btn btn-default" onclick="closePopup()">Close</button>
+    </div>
+  @*   } *@
+</form>
+<script>
+    function closePopup() {
+        $('#editEmployeeModal').modal('hide');
+    }
+</script>

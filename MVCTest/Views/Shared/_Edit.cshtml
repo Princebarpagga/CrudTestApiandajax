@@ -1,0 +1,101 @@
+﻿@model MVCTest.Models.Employee
+
+<form action="@Url.Action("Edit", "Employee")" method="post" class="form-horizontal" role="form" id = "editEmployeeForm" >
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="EmpId" value="@Model.EmpId" />
+    <div class="modal-header">
+        <h4 class="modal-title">Edit Employee</h4>
+    </div>
+    <div id="editEmployeeModal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div id="editEmployeePartial"></div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label class="control-label col-md-2" for="EmployeeName">Employee Name</label>
+            <div class="col-md-10">
+                <input type="text" id="EmployeeName" name="EmployeeName"  pattern="[A-Z][a-zA-Z]*" class="form-control" value="@Model.EmployeeName" required />
+                <span class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="Salary">Salary</label>
+            <div class="col-md-10">
+                <input type="text" id="Salary" name="Salary" class="form-control" onkeypress="return isNumberKey(event)" value="@Model.Salary" required />
+                <span class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="Email" class="control-label col-md-2">Email</label>
+            <div class="col-md-10">
+                <input type="email" id="Email" class="form-control" name="Email" value="@Model.Email"required  />
+                <span class="text-danger" id="EmailValidation"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2" for="DepartmentId">Department</label>
+            <div class="col-md-10">
+                <select id="DepartmentId" name="DepartmentId" class="form-control" required>
+                    <option value="">-- Select Department --</option>
+                    @foreach (var department in ViewBag.DepartmentList as IEnumerable<SelectListItem>)
+                    {
+                        <option value="@department.Value" @(Model.DepartmentId.HasValue && Model.DepartmentId.Value == int.Parse(department.Value) ? "selected" : "")>@department.Text</option>
+
+                    }
+                </select>
+                <span class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="SkillId">Skill</label>
+            <div class="col-md-10">
+                <select id="SkillId" name="SkillId" class="form-control" required>
+                    <option value="">-- Select Skill --</option>
+                    @foreach (var skill in ViewBag.SkillList as IEnumerable<SelectListItem>)
+                    {
+                        <option value="@skill.Value" @(Model.SkillId.HasValue && Model.SkillId.Value == int.Parse(skill.Value) ? "selected" : "")>@skill.Text</option>
+
+                    }
+                </select>
+                <span class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-outline-primary"id="updateEmployeeButton" onclick="validateEmployeeForm()">Update</button>
+        <button type="button" class="btn btn-outline-secondary" onclick="closePopup()">Close</button>
+    </div>
+</form>
+<script src="~/Scripts/employeeValidation.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#editEmployeeForm').submit(function (e) {
+            e.preventDefault(); 
+
+            // Perform AJAX request
+            $.ajax({
+                url: $(this).attr('action'),
+                method: $(this).attr('method'),
+                data: $(this).serialize(),
+                success: function (response) {
+                    
+                    if (response.success) {
+                        // Show toaster notification
+                        showUpdateSuccessToast();
+                        // Optionally, close the modal or perform any other actions
+                    } else {
+                        // Handle other scenarios if needed
+                    }
+                },
+                error: function (xhr, status, error) {
+                   
+                }
+            });
+        });
+    });
+</script>

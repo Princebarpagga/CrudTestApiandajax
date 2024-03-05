@@ -1,0 +1,25 @@
+﻿@model MVCTest.Models.Employee
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Employee Details</h5>
+      
+    </div>
+    <div class="modal-body">
+        @*<p><strong>Employee ID:</strong> @Model.EmployeeID</p>*@
+        <p><strong>Name:</strong> @Model.EmployeeName</p>
+        <p><strong>Salary:</strong> @Model.Salary</p>
+        <p><strong>Department:</strong> @Model.Department.DepartmentName</p>
+        <p><strong>Skill:</strong> @Model.Skill.SkillName</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <!-- Add more details as needed -->
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" onclick="closePopup()">Close</button>
+    </div>
+</div>
+<script>
+    function closePopup() {
+        $('#detailsEmployeeModal').modal('hide');
+    }
+</script>
